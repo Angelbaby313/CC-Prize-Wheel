@@ -1,29 +1,18 @@
-CHIRAQ CHRONICLES PRIZE WHEEL
+CC PRIZE WHEEL — MULTI-SERVER VERSION
 
-Standalone Python Discord bot.
+Only DISCORD_TOKEN is required globally.
+Invite the same bot to each Discord server.
 
-MANAGEMENT ROLE
-Boss Lady — 1438936210889511032
+FIRST SETUP IN EACH SERVER:
+/prize_setup wheel_channel:#channel log_channel:#staff-log manager_role:@role
 
-STARTING PRIZES
-- Donor Car
-- $5,000 Cash
-- $5,000 Cash
-- $2,500 Cash
-- Air Soft Gun
-- Melee Weapon
-- Legal Item Pack
-- Illegal Item Pack
+The selected manager role is stored separately for each server.
+For Chiraq, select the Boss Lady role (ID 1438936210889511032).
 
-HOST SETUP
-1. Upload/deploy the CONTENTS of this folder as one project.
-2. Set DISCORD_TOKEN, GUILD_ID, PRIZE_CHANNEL_ID, and LOG_CHANNEL_ID in host variables.
-3. Do not upload your real .env publicly.
-4. Start command: python bot.py
-
-COMMANDS
-/prizewheel @winner
+COMMANDS:
+/prize_setup
+/prizewheel
 /prize_list
-/prize_add <name>
-/prize_remove <exact name>
+/prize_add
+/prize_remove
 /prize_reset
