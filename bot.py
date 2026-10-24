@@ -6,6 +6,12 @@ from discord.ext import commands
 
 TOKEN = os.getenv("DISCORD_TOKEN")
 DATA_FILE = os.getenv("DATA_FILE", "wheel_data.json")
+CHIRAQ_ALLOWED_ROLE_IDS = {
+    1553198437267152966,
+    1553162974162849812,
+    1553198442023747656,
+}
+
 DEFAULT_PRIZES = [
     "Donor Car", "$5,000 Cash", "$5,000 Cash", "$2,500 Cash",
     "Air Soft Gun", "Melee Weapon", "Legal Item Pack", "Illegal Item Pack"
@@ -47,8 +53,11 @@ bot = commands.Bot(command_prefix="!", intents=intents)
 def is_manager(member, cfg):
     if member.guild_permissions.administrator:
         return True
+    member_role_ids = {r.id for r in member.roles}
+    if member_role_ids & CHIRAQ_ALLOWED_ROLE_IDS:
+        return True
     role_id = int(cfg.get("manager_role_id", 0) or 0)
-    return role_id and any(r.id == role_id for r in member.roles)
+    return bool(role_id and role_id in member_role_ids)
 
 def prize_emoji(p):
     q = p.lower()
@@ -135,12 +144,12 @@ async def on_ready():
         print("sync error", e)
     print(f"Logged in as {bot.user} | {len(bot.guilds)} server(s)")
 
-@bot.tree.command(name="prize_setup", description="Administrator: configure this server's Prize Wheel")
+@bot.tree.command(name="ticket_wheel_setup", description="Administrator: configure ticket Prize Wheel")
 @app_commands.describe(
     log_channel="Private channel for prize logs",
     manager_role="Role allowed to manage and start the wheel"
 )
-async def prize_setup(interaction: discord.Interaction, log_channel: discord.TextChannel,
+async def ticket_wheel_setup(interaction: discord.Interaction, log_channel: discord.TextChannel,
                       manager_role: discord.Role):
     if not interaction.user.guild_permissions.administrator:
         return await interaction.response.send_message("Server Administrator only.", ephemeral=True)
