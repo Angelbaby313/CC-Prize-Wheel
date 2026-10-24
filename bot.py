@@ -33,7 +33,6 @@ def guild_config(guild_id):
     if gid not in data["guilds"]:
         data["guilds"][gid] = {
             "prizes": DEFAULT_PRIZES.copy(),
-            "wheel_channel_id": 0,
             "log_channel_id": 0,
             "manager_role_id": 0,
             "spins": []
@@ -138,22 +137,20 @@ async def on_ready():
 
 @bot.tree.command(name="prize_setup", description="Administrator: configure this server's Prize Wheel")
 @app_commands.describe(
-    wheel_channel="Channel where winners spin",
     log_channel="Private channel for prize logs",
     manager_role="Role allowed to manage and start the wheel"
 )
-async def prize_setup(interaction: discord.Interaction, wheel_channel: discord.TextChannel,
-                      log_channel: discord.TextChannel, manager_role: discord.Role):
+async def prize_setup(interaction: discord.Interaction, log_channel: discord.TextChannel,
+                      manager_role: discord.Role):
     if not interaction.user.guild_permissions.administrator:
         return await interaction.response.send_message("Server Administrator only.", ephemeral=True)
     cfg = guild_config(interaction.guild_id)
-    cfg["wheel_channel_id"] = wheel_channel.id
     cfg["log_channel_id"] = log_channel.id
     cfg["manager_role_id"] = manager_role.id
     save_data()
     await interaction.response.send_message(
         f"✅ Prize Wheel configured for **{interaction.guild.name}**.\n"
-        f"🎡 Wheel: {wheel_channel.mention}\n"
+        f"🎟️ Spins can be started inside winner ticket channels.\n"
         f"🧾 Logs: {log_channel.mention}\n"
         f"👑 Manager role: {manager_role.mention}",
         ephemeral=True
@@ -165,10 +162,6 @@ async def prizewheel(interaction: discord.Interaction, winner: discord.Member):
     cfg = guild_config(interaction.guild_id)
     if not is_manager(interaction.user, cfg):
         return await interaction.response.send_message("You do not have permission to start a prize wheel.", ephemeral=True)
-    wheel_id = int(cfg.get("wheel_channel_id", 0) or 0)
-    if wheel_id and interaction.channel_id != wheel_id:
-        return await interaction.response.send_message(f"Please use the prize wheel in <#{wheel_id}>.", ephemeral=True)
-
     e = discord.Embed(
         title="🎡 CHIRAQ CHRONICLES PRIZE WHEEL",
         description=f"### Congratulations {winner.mention}!\n"

@@ -1,17 +1,17 @@
-CC PRIZE WHEEL — MULTI-SERVER VERSION
+CC PRIZE WHEEL — MULTI-SERVER + TICKET VERSION
 
-Only DISCORD_TOKEN is required globally.
-Invite the same bot to each Discord server.
+Use the same Discord bot in multiple servers.
+Prize spins happen inside winner ticket channels; no dedicated wheel channel is required.
 
 FIRST SETUP IN EACH SERVER:
-/prize_setup wheel_channel:#channel log_channel:#staff-log manager_role:@role
+/prize_setup log_channel:#staff-log manager_role:@role
 
-The selected manager role is stored separately for each server.
-For Chiraq, select the Boss Lady role (ID 1438936210889511032).
+IN A WINNER TICKET:
+/prizewheel winner:@winner
+Only the selected winner can press SPIN THE WHEEL.
+The public result stays in the ticket and a copy is sent to the configured log channel.
 
-COMMANDS:
-/prize_setup
-/prizewheel
+MANAGEMENT:
 /prize_list
 /prize_add
 /prize_remove
